@@ -2,12 +2,13 @@ library(Biobase)
 library(SummarizedExperiment)
 library(MultiAssayExperiment)
 library(stringr)
+
+source_location <- "https://raw.githubusercontent.com/BHKLAB-Pachyderm/ICB_Common/main"
        
-get_MultiAssayExp <- function(study, input_dir, source_location){
-  source(paste(source_location, "code", "CNA_Functions.R", sep="/"))
-  source(paste(source_location, "code", "SNV_Functions.R", sep="/"))
-  source(paste(source_location, "code", "Create_SummarizedExp.R", sep="/"))
-  
+get_MultiAssayExp <- function(study, input_dir){  
+  source(paste(source_location, "code", "CNA_Functions.R", sep = "/"))
+  source(paste(source_location, "code", "SNV_Functions.R", sep = "/"))
+  source(paste(source_location, "code", "Create_SummarizedExp.R", sep = "/"))
   data = read.csv( paste(source_location, "data", "DATASET_LOAD_INFO.csv", sep="/") , sep=";" , stringsAsFactors=FALSE )
   data <- data[data$study == study, ]
   
