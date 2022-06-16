@@ -111,7 +111,7 @@ Create_SNV_SummarizedExperiment = function( snv_output , case_file , clin_file ,
     s = snv[ snv$Sample %in% sample[i], ]
     if( nrow(s) ){
       for(j in 1:nrow(s)){
-        if( !is.na( s$Gene[j]) ){ 
+        if( !is.na( s$Gene[j]) & nchar(s$Gene[j]) > 0){ 
           if( !is.na( mat_snv[ s$Gene[j] , sample[i] ] ) ){
             mat_snv[ s$Gene[j] , sample[i] ]  = paste( mat_snv[ s$Gene[j] , sample[i] ] , paste( s$Ref[j] , s$Alt[j] , sep=">" ) , sep=";" )
           } else{
