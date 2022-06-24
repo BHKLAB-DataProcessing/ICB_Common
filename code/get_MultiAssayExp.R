@@ -4,8 +4,8 @@ library(MultiAssayExperiment)
 library(stringr)
 
 source_location <- "https://raw.githubusercontent.com/BHKLAB-Pachyderm/ICB_Common/main"
-       
-get_MultiAssayExp <- function(study, input_dir){  
+
+get_MultiAssayExp <- function(study, input_dir){ 
   source(paste(source_location, "code", "CNA_Functions.R", sep = "/"))
   source(paste(source_location, "code", "SNV_Functions.R", sep = "/"))
   source(paste(source_location, "code", "Create_SummarizedExp.R", sep = "/"))
