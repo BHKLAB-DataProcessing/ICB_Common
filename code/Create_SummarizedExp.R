@@ -22,10 +22,12 @@ renamed_cols <- list(
 )
 
 format_se <- function(assay, coldata, assay_type){
-  
-  colnames(assay) <- str_replace_all(colnames(assay), '[-\\.]', '_')
-  rownames(coldata) <- str_replace_all(rownames(coldata), '[-\\.]', '_')
-  coldata$patient <- rownames(coldata)
+  # colnames(assay) <- str_replace_all(colnames(assay), '[-\\.]', '_')
+  # rownames(coldata) <- str_replace_all(rownames(coldata), '[-\\.]', '_')
+  # coldata$patient <- rownames(coldata)
+  # assay <- expr
+  # coldata <- clin
+  # assay_type <- 'expr'
   
   colnames(coldata) <- unlist(lapply(se_colnames, function(col){
     if(is.null(renamed_cols[[col]])){
@@ -76,26 +78,51 @@ format_se <- function(assay, coldata, assay_type){
     return(SummarizedExperiment(assays=list("snv"=assay), colData=coldata, rowData=assay_genes))
     
   }else{
+    assay_genes <- features_gene[features_gene$gene_name %in% rownames(assay), ]
+    duplicates <- lapply(unique(assay_genes$gene_name), function(gene){
+      filtered <- assay_genes[assay_genes$gene_name == gene, ]
+      if(nrow(filtered) > 1){
+        return(rownames(filtered)[2:length(rownames(filtered))])
+      }else{
+        return(NA)
+      }
+    })
+    duplicates <- unlist(duplicates[!is.na(duplicates)])
+    assay_genes <- assay_genes[!rownames(assay_genes) %in% duplicates, ]
     
     # replace assay gene names with gene id
-    assay <- assay[rownames(assay) %in% features_gene$gene_name, ]
-    gene_ids <- unlist(lapply(rownames(assay), function(assay_row){
-      vals <- rownames(features_gene[features_gene$gene_name == assay_row, ])
-      if(length(vals) > 1){
-        return(vals[1])
+    gene_ids <- unlist(lapply(rownames(assay), function(row_name){
+      gene_id <- rownames(assay_genes[assay_genes$gene_name == row_name, ])
+      if(length(gene_id) > 0){
+        return(gene_id)
       }else{
-        return(vals)
+        return(row_name)
       }
     }))
     rownames(assay) <- gene_ids
     
+    missing <- gene_ids[!gene_ids %in% rownames(assay_genes)]
+    if(length(missing) > 0){
+      added <- data.frame(matrix(data=NA, ncol=ncol(assay_genes), nrow=(length(missing))))
+      colnames(added) <- colnames(assay_genes)
+      rownames(added) <- missing
+      added$gene_name <- missing
+      added$gene_id <- missing
+      added$seqnames <- 'unknown'
+      added$type <- 'gene'
+      added$start <- -1
+      added$end <- -1
+      added$strand <- '*'
+      assay_genes <- rbind(assay_genes, added)
+    }
+    
     # build the GRanges object ussed as rowRanges (rowData)
-    assay_genes <- as.data.table(features_gene[rownames(features_gene) %in% gene_ids, ])
     assay_genes <- assay_genes[order(rownames(assay_genes)), ]
+    assay_genes <- as.data.table(assay_genes)
     assay_genes <- assay_genes[, gene_id_no_ver := gsub("\\..*$", "", gene_id)]
     assay_genes[
       is.na(start),
-      c("start", "end", "length", "strand") := list(-1, -1, 0, "*")
+      c("start", "end", "length", "strand") := list(-1, -1, NA, "*")
     ]
     row_ranges <- makeGRangesFromDataFrame(
       assay_genes,
@@ -112,11 +139,10 @@ format_se <- function(assay, coldata, assay_type){
 }
 
 
-Create_CNA_SummarizedExperiment = function( cna_output , case_file , clin_file , cna_file , feat_snv , feat_cna , feat_cin , snv_bool , cna_bool ){
-  case = read.csv( case_file , sep=";" , stringsAsFactors=FALSE )
-  cna = read.csv( cna_file , sep=";" , stringsAsFactors=FALSE )
-  
-  clin = read.csv( clin_file , sep=";" , stringsAsFactors=FALSE )
+Create_CNA_SummarizedExperiment = function( case, clin, cna, feat_snv , feat_cna , feat_cin , snv_bool , cna_bool ){
+  # case = read.csv( case_file , sep=";" , stringsAsFactors=FALSE )
+  # cna = read.csv( cna_file , sep=";" , stringsAsFactors=FALSE )
+  # clin = read.csv( clin_file , sep=";" , stringsAsFactors=FALSE )
   rownames(clin) = clin$patient
   clin = cbind( clin , matrix( NA , nrow=nrow(clin) , ncol=12 ) )
   colnames(clin) <- se_colnames
@@ -134,11 +160,10 @@ Create_CNA_SummarizedExperiment = function( cna_output , case_file , clin_file ,
   return(format_se(assay=cna, coldata=clin, assay_type='cna'))
 }
 
-Create_EXP_SummarizedExperiment = function( case_file , clin_file , expr_file , feat_snv , feat_cna , feat_cin , snv_bool , cna_bool ){
-  case = read.csv( case_file , sep=";" , stringsAsFactors=FALSE )
-  expr = read.csv( expr_file , sep=";" , stringsAsFactors=FALSE )
-
-  clin = read.csv( clin_file , sep=";" , stringsAsFactors=FALSE )
+Create_EXP_SummarizedExperiment = function( case , clin, expr, feat_snv, feat_cna, feat_cin, snv_bool, cna_bool ){
+  # case = read.csv( case_file , sep=";" , stringsAsFactors=FALSE )
+  # expr = read.csv( expr_file , sep=";" , stringsAsFactors=FALSE )
+  # clin = read.csv( clin_file , sep=";" , stringsAsFactors=FALSE )
   rownames(clin) = clin$patient
   
   clin = cbind( clin , matrix( NA , nrow=nrow(clin) , ncol=12 ) )
@@ -163,9 +188,10 @@ Create_EXP_SummarizedExperiment = function( case_file , clin_file , expr_file , 
   return(format_se(assay=expr, coldata=clin, assay_type='expr'))
 }
 
-Create_SNV_SummarizedExperiment = function( snv_output , case_file , clin_file , snv_file , feat_snv , feat_cna , feat_cin , cna_bool, snv_bool ){
-  case = read.csv( case_file , sep=";" , stringsAsFactors=FALSE )
-  snv = read.csv( snv_file , sep=";" , stringsAsFactors=FALSE )
+Create_SNV_SummarizedExperiment = function( case, clin, snv, feat_snv , feat_cna , feat_cin , cna_bool, snv_bool ){
+  # case = read.csv( case_file , sep=";" , stringsAsFactors=FALSE )
+  # snv = read.csv( snv_file , sep=";" , stringsAsFactors=FALSE )
+  # clin = read.csv( clin_file , sep=";" , stringsAsFactors=FALSE )
   snv = snv[ snv$Effect %in% c("In_Frame_Del" , "In_Frame_Ins" , "Start_Codon_Ins" , "Frame_Shift_Del" ,
                                "Frame_Shift_Ins" , "Missense_Mutation" , "Nonsense_Mutation" , "Nonstop_Mutation" ,
                                "Splice_Site" , "Stop_Codon_Del" , "De_novo_Start_OutOfFrame" , "Start_Codon_SNP") ,
@@ -195,7 +221,6 @@ Create_SNV_SummarizedExperiment = function( snv_output , case_file , clin_file ,
     }
   }
   
-  clin = read.csv( clin_file , sep=";" , stringsAsFactors=FALSE )
   rownames(clin) = clin$patient
   clin = cbind( clin , matrix( NA , nrow=nrow(clin) , ncol=12 ) )
   colnames(clin) <- se_colnames
@@ -242,20 +267,32 @@ Create_SummarizedExperiments = function( input_dir, study , expr_bool , snv_bool
 
 	if( snv_bool ){ 
 		feat_snv <- Get_SNV_feature( case=case_file, file=snv_file, coverage=coverage , indel_bool=indel_bool , mutsig_bool=mutsig_bool ) 
+		rownames(feat_snv) <- str_replace_all(rownames(feat_snv), '[-\\.]', '_')
 	}
+  
+  case <- read.csv( case_file , sep=";" , stringsAsFactors=FALSE )
+  case$patient <- str_replace_all(case$patient, '[-\\.]', '_')
+  clin <- read.csv( clin_file , sep=";" , stringsAsFactors=FALSE )
+  clin$patient <- str_replace_all(clin$patient, '[-\\.]', '_')
 
 	if( cna_bool ){
-	  se_list[["cna"]] <- Create_CNA_SummarizedExperiment( case_file=case_file , clin_file=clin_file , cna_file=cna_file , 
+	  cna = read.csv( cna_file , sep=";" , stringsAsFactors=FALSE )
+	  colnames(cna) <- str_replace_all(colnames(cna), '[-\\.]', '_')
+	  se_list[["cna"]] <- Create_CNA_SummarizedExperiment( case=case , clin=clin , cna=cna , 
 									feat_snv=feat_snv , feat_cna=feat_cna , feat_cin=feat_cin , cna_bool=cna_bool , snv_bool=snv_bool )
 	}
 
 	if( expr_bool ){
-	  se_list[["expr"]] <- Create_EXP_SummarizedExperiment( case_file=case_file , clin_file=clin_file , expr_file=expr_file , 
+	  expr = read.csv( expr_file , sep=";" , stringsAsFactors=FALSE )
+	  colnames(expr) <- str_replace_all(colnames(expr), '[-\\.]', '_')
+	  se_list[["expr"]] <- Create_EXP_SummarizedExperiment( case=case, clin=clin, expr=expr, 
 									feat_snv=feat_snv , feat_cna=feat_cna, feat_cin=feat_cin , cna_bool=cna_bool , snv_bool=snv_bool )
 	}
 
 	if( snv_bool ){
-	  se_list[["snv"]] <- Create_SNV_SummarizedExperiment( case_file=case_file , clin_file=clin_file , snv_file=snv_file , 
+	  snv = read.csv( snv_file , sep=";" , stringsAsFactors=FALSE )
+	  snv$Sample <- str_replace_all(snv$Sample, '[-\\.]', '_')
+	  se_list[["snv"]] <- Create_SNV_SummarizedExperiment( case=case , clin=clin , snv=snv , 
 									feat_snv=feat_snv , feat_cna=feat_cna , feat_cin=feat_cin , cna_bool=cna_bool , snv_bool=snv_bool )
 	}
   return(se_list)
