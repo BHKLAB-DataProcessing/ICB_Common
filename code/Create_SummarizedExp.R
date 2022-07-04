@@ -78,51 +78,26 @@ format_se <- function(assay, coldata, assay_type){
     return(SummarizedExperiment(assays=list("snv"=assay), colData=coldata, rowData=assay_genes))
     
   }else{
-    assay_genes <- features_gene[features_gene$gene_name %in% rownames(assay), ]
-    duplicates <- lapply(unique(assay_genes$gene_name), function(gene){
-      filtered <- assay_genes[assay_genes$gene_name == gene, ]
-      if(nrow(filtered) > 1){
-        return(rownames(filtered)[2:length(rownames(filtered))])
-      }else{
-        return(NA)
-      }
-    })
-    duplicates <- unlist(duplicates[!is.na(duplicates)])
-    assay_genes <- assay_genes[!rownames(assay_genes) %in% duplicates, ]
     
     # replace assay gene names with gene id
-    gene_ids <- unlist(lapply(rownames(assay), function(row_name){
-      gene_id <- rownames(assay_genes[assay_genes$gene_name == row_name, ])
-      if(length(gene_id) > 0){
-        return(gene_id)
+    assay <- assay[rownames(assay) %in% features_gene$gene_name, ]
+    gene_ids <- unlist(lapply(rownames(assay), function(assay_row){
+      vals <- rownames(features_gene[features_gene$gene_name == assay_row, ])
+      if(length(vals) > 1){
+        return(vals[1])
       }else{
-        return(row_name)
+        return(vals)
       }
     }))
     rownames(assay) <- gene_ids
     
-    missing <- gene_ids[!gene_ids %in% rownames(assay_genes)]
-    if(length(missing) > 0){
-      added <- data.frame(matrix(data=NA, ncol=ncol(assay_genes), nrow=(length(missing))))
-      colnames(added) <- colnames(assay_genes)
-      rownames(added) <- missing
-      added$gene_name <- missing
-      added$gene_id <- missing
-      added$seqnames <- 'unknown'
-      added$type <- 'gene'
-      added$start <- -1
-      added$end <- -1
-      added$strand <- '*'
-      assay_genes <- rbind(assay_genes, added)
-    }
-    
     # build the GRanges object ussed as rowRanges (rowData)
+    assay_genes <- as.data.table(features_gene[rownames(features_gene) %in% gene_ids, ])
     assay_genes <- assay_genes[order(rownames(assay_genes)), ]
-    assay_genes <- as.data.table(assay_genes)
     assay_genes <- assay_genes[, gene_id_no_ver := gsub("\\..*$", "", gene_id)]
     assay_genes[
       is.na(start),
-      c("start", "end", "length", "strand") := list(-1, -1, NA, "*")
+      c("start", "end", "length", "strand") := list(-1, -1, 0, "*")
     ]
     row_ranges <- makeGRangesFromDataFrame(
       assay_genes,
