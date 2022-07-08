@@ -4,10 +4,13 @@ library(SummarizedExperiment)
 library(GenomicRanges)
 library(biomaRt)
 
-se_colnames <- c( 
+clin_cols <- c(
   "patient" , "sex" , "age" , "primary" , "histo" , "stage" , 
   "response.other.info" , "recist" , "response" , "drug_type" , 
-  "dna" , "rna" , "t.pfs" , "pfs" , "t.os" , "os" ,
+  "dna" , "rna" , "t.pfs" , "pfs" , "t.os" , "os"
+)
+
+added_cols <- c(
   "TMB_raw" , "nsTMB_raw" , "indel_TMB_raw" , "indel_nsTMB_raw" , 
   "TMB_perMb" , "nsTMB_perMb" , "indel_TMB_perMb" , "indel_nsTMB_perMb" ,
   "CIN" , "CNA_tot" , "AMP" , "DEL" 
@@ -29,12 +32,9 @@ format_se <- function(assay, coldata, assay_type){
   # coldata <- clin
   # assay_type <- 'expr'
   
-  colnames(coldata) <- unlist(lapply(se_colnames, function(col){
-    if(is.null(renamed_cols[[col]])){
-      return(col)
-    }
-    return(renamed_cols[[col]])
-  }))
+  for(renamed_col in names(renamed_cols)){
+    colnames(coldata)[colnames(coldata) == renamed_col] <- renamed_cols[[renamed_col]]
+  }
   
   coldata$survival_unit <- "month"
   coldata$survival_type <- "PFS"
@@ -119,8 +119,13 @@ Create_CNA_SummarizedExperiment = function( case, clin, cna, feat_snv , feat_cna
   # cna = read.csv( cna_file , sep=";" , stringsAsFactors=FALSE )
   # clin = read.csv( clin_file , sep=";" , stringsAsFactors=FALSE )
   rownames(clin) = clin$patient
-  clin = cbind( clin , matrix( NA , nrow=nrow(clin) , ncol=12 ) )
-  colnames(clin) <- se_colnames
+  added_df <- as.data.frame(matrix(NA, nrow = nrow(clin), ncol = length(added_cols)))
+  colnames(added_df) <- added_cols
+  clin <- data.frame(cbind(
+    clin[, clin_cols],
+    added_df,
+    clin[, !colnames(clin) %in% clin_cols]
+  ))
   
   if(snv_bool){ 
     clin[ rownames(feat_snv) , colnames(feat_snv) ] = feat_snv
@@ -140,9 +145,13 @@ Create_EXP_SummarizedExperiment = function( case , clin, expr, feat_snv, feat_cn
   # expr = read.csv( expr_file , sep=";" , stringsAsFactors=FALSE )
   # clin = read.csv( clin_file , sep=";" , stringsAsFactors=FALSE )
   rownames(clin) = clin$patient
-  
-  clin = cbind( clin , matrix( NA , nrow=nrow(clin) , ncol=12 ) )
-  colnames(clin) <- se_colnames
+  added_df <- as.data.frame(matrix(NA, nrow = nrow(clin), ncol = length(added_cols)))
+  colnames(added_df) <- added_cols
+  clin <- data.frame(cbind(
+    clin[, clin_cols],
+    added_df,
+    clin[, !colnames(clin) %in% clin_cols]
+  ))
   
   if(snv_bool){ 
     clin[ rownames(feat_snv) , colnames(feat_snv) ] = feat_snv
@@ -197,8 +206,14 @@ Create_SNV_SummarizedExperiment = function( case, clin, snv, feat_snv , feat_cna
   }
   
   rownames(clin) = clin$patient
-  clin = cbind( clin , matrix( NA , nrow=nrow(clin) , ncol=12 ) )
-  colnames(clin) <- se_colnames
+  added_df <- as.data.frame(matrix(NA, nrow = nrow(clin), ncol = length(added_cols)))
+  colnames(added_df) <- added_cols
+  clin <- data.frame(cbind(
+    clin[, clin_cols],
+    added_df,
+    clin[, !colnames(clin) %in% clin_cols]
+  ))
+  
   clin[ rownames(feat_snv) , colnames(feat_snv) ] = feat_snv
   
   if(cna_bool){ 
@@ -222,7 +237,7 @@ Create_SummarizedExperiments = function( input_dir, study , expr_bool , snv_bool
   # cin_bool= data$cin_bool
   # coverage= data$coverage
   # indel_bool= data$indel_bool
-  
+
   # Path to processed data 
 	case_file = paste( input_dir , "cased_sequenced.csv" , sep="/" )
 	clin_file = paste( input_dir , "CLIN.csv" , sep="/" )
