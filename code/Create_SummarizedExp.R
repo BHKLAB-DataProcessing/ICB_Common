@@ -24,15 +24,13 @@ renamed_cols <- list(
   patient = "unique_patient_ID"
 )
 
-format_se <- function(assay, coldata, assay_type, convert_gene_name=FALSE){
+format_se <- function(assay, coldata, assay_type, convert_gene_name=TRUE){
   # colnames(assay) <- str_replace_all(colnames(assay), '[-\\.]', '_')
   # rownames(coldata) <- str_replace_all(rownames(coldata), '[-\\.]', '_')
   # coldata$patient <- rownames(coldata)
   # assay <- expr
   # coldata <- clin
   # assay_type <- 'expr'
-  
-  
   
   for(renamed_col in names(renamed_cols)){
     colnames(coldata)[colnames(coldata) == renamed_col] <- renamed_cols[[renamed_col]]
@@ -81,6 +79,7 @@ format_se <- function(assay, coldata, assay_type, convert_gene_name=FALSE){
     
   }else{
     
+    gene_ids <- c()
     if(convert_gene_name){
       # replace assay gene names with gene id
       assay <- assay[rownames(assay) %in% features_gene$gene_name, ]
@@ -93,6 +92,9 @@ format_se <- function(assay, coldata, assay_type, convert_gene_name=FALSE){
         }
       }))
       rownames(assay) <- gene_ids 
+    }else{
+      assay <- assay[rownames(assay) %in% rownames(features_gene), ]
+      gene_ids <- rownames(assay)
     }
     
     # build the GRanges object ussed as rowRanges (rowData)
@@ -145,9 +147,9 @@ Create_CNA_SummarizedExperiment = function( case, clin, cna, feat_snv , feat_cna
 }
 
 Create_EXP_SummarizedExperiment = function( study, case , clin, expr, feat_snv, feat_cna, feat_cin, snv_bool, cna_bool ){
-  # case = read.csv( case_file , sep=";" , stringsAsFactors=FALSE )
-  # expr = read.csv( expr_file , sep=";" , stringsAsFactors=FALSE )
-  # clin = read.csv( clin_file , sep=";" , stringsAsFactors=FALSE )
+  case = read.csv( case_file , sep=";" , stringsAsFactors=FALSE )
+  expr = read.csv( expr_file , sep=";" , stringsAsFactors=FALSE )
+  clin = read.csv( clin_file , sep=";" , stringsAsFactors=FALSE )
   
   study_with_gene_id <- c("Miao.1")
   
@@ -176,7 +178,7 @@ Create_EXP_SummarizedExperiment = function( study, case , clin, expr, feat_snv, 
   clin = clin[ patient , ]
   expr = expr[ , patient ]
   
-  return(format_se(assay=expr, coldata=clin, assay_type='expr', convert_gene_name=study %in% study_with_gene_id))
+  return(format_se(assay=expr, coldata=clin, assay_type='expr', convert_gene_name=!study %in% study_with_gene_id))
 }
 
 Create_SNV_SummarizedExperiment = function( case, clin, snv, feat_snv , feat_cna , feat_cin , cna_bool, snv_bool ){
