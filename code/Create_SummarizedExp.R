@@ -147,9 +147,9 @@ Create_CNA_SummarizedExperiment = function( case, clin, cna, feat_snv , feat_cna
 }
 
 Create_EXP_SummarizedExperiment = function( study, case , clin, expr, feat_snv, feat_cna, feat_cin, snv_bool, cna_bool ){
-  case = read.csv( case_file , sep=";" , stringsAsFactors=FALSE )
-  expr = read.csv( expr_file , sep=";" , stringsAsFactors=FALSE )
-  clin = read.csv( clin_file , sep=";" , stringsAsFactors=FALSE )
+  # case = read.csv( case_file , sep=";" , stringsAsFactors=FALSE )
+  # expr = read.csv( expr_file , sep=";" , stringsAsFactors=FALSE )
+  # clin = read.csv( clin_file , sep=";" , stringsAsFactors=FALSE )
   
   study_with_gene_id <- c("Miao.1")
   
