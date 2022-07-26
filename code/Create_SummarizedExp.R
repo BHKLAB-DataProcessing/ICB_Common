@@ -151,7 +151,7 @@ Create_EXP_SummarizedExperiment = function( study, case , clin, expr, feat_snv, 
   # expr = read.csv( expr_file , sep=";" , stringsAsFactors=FALSE )
   # clin = read.csv( clin_file , sep=";" , stringsAsFactors=FALSE )
   
-  study_with_gene_id <- c("Miao.1", "Nathanson", "Snyder", "Van_Allen")
+  study_with_gene_id <- c("Miao.1", "Nathanson", "Snyder", "Van_Allen", "VanDenEnde")
   
   rownames(clin) = clin$patient
   added_df <- as.data.frame(matrix(NA, nrow = nrow(clin), ncol = length(added_cols)))
