@@ -3,6 +3,7 @@ library(Biobase)
 library(SummarizedExperiment)
 library(GenomicRanges)
 library(biomaRt)
+library(stringr)
 
 clin_cols <- c(
   "patient" , "sex" , "age" , "primary" , "histo" , "stage" , 
@@ -24,7 +25,7 @@ renamed_cols <- list(
   patient = "unique_patient_ID"
 )
 
-format_se <- function(assay, coldata, assay_type, convert_gene_name=TRUE){
+format_se <- function(assay, coldata, assay_type, convert_gene_name=TRUE, is_isoform){
   # colnames(assay) <- str_replace_all(colnames(assay), '[-\\.]', '_')
   # rownames(coldata) <- str_replace_all(rownames(coldata), '[-\\.]', '_')
   # coldata$patient <- rownames(coldata)
@@ -80,11 +81,17 @@ format_se <- function(assay, coldata, assay_type, convert_gene_name=TRUE){
   }else{
     
     gene_ids <- c()
+    features_df <- features_gene
+    
+    if(is_isoform){
+      features_df <- features_transcript
+    }
+    
     if(convert_gene_name){
       # replace assay gene names with gene id
-      assay <- assay[rownames(assay) %in% features_gene$gene_name, ]
+      assay <- assay[rownames(assay) %in% features_df$gene_name, ]
       gene_ids <- unlist(lapply(rownames(assay), function(assay_row){
-        vals <- rownames(features_gene[features_gene$gene_name == assay_row, ])
+        vals <- rownames(features_df[features_df$gene_name == assay_row, ])
         if(length(vals) > 1){
           return(vals[1])
         }else{
@@ -93,12 +100,12 @@ format_se <- function(assay, coldata, assay_type, convert_gene_name=TRUE){
       }))
       rownames(assay) <- gene_ids 
     }else{
-      assay <- assay[rownames(assay) %in% rownames(features_gene), ]
+      assay <- assay[rownames(assay) %in% rownames(features_df), ]
       gene_ids <- rownames(assay)
     }
     
     # build the GRanges object ussed as rowRanges (rowData)
-    assay_genes <- as.data.table(features_gene[rownames(features_gene) %in% gene_ids, ])
+    assay_genes <- as.data.table(features_df[rownames(features_df) %in% gene_ids, ])
     assay_genes <- assay_genes[order(rownames(assay_genes)), ]
     assay_genes <- assay_genes[, gene_id_no_ver := gsub("\\..*$", "", gene_id)]
     assay_genes[
@@ -146,12 +153,12 @@ Create_CNA_SummarizedExperiment = function( case, clin, cna, feat_snv , feat_cna
   return(format_se(assay=cna, coldata=clin, assay_type='cna'))
 }
 
-Create_EXP_SummarizedExperiment = function( study, case , clin, expr, feat_snv, feat_cna, feat_cin, snv_bool, cna_bool ){
+Create_EXP_SummarizedExperiment = function( study, case , clin, expr, feat_snv, feat_cna, feat_cin, snv_bool, cna_bool, is_isoform=FALSE ){
   # case = read.csv( case_file , sep=";" , stringsAsFactors=FALSE )
   # expr = read.csv( expr_file , sep=";" , stringsAsFactors=FALSE )
   # clin = read.csv( clin_file , sep=";" , stringsAsFactors=FALSE )
   
-  study_with_gene_id <- c("Miao.1", "Nathanson", "Snyder", "Van_Allen", "VanDenEnde")
+  study_with_gene_id <- c("Gide", "Hugo", "Jung", "Kim", "Miao.1", "Nathanson", "Riaz", "Snyder", "Van_Allen", "VanDenEnde")
   
   rownames(clin) = clin$patient
   added_df <- as.data.frame(matrix(NA, nrow = nrow(clin), ncol = length(added_cols)))
@@ -178,7 +185,7 @@ Create_EXP_SummarizedExperiment = function( study, case , clin, expr, feat_snv, 
   clin = clin[ patient , ]
   expr = expr[ , patient ]
   
-  return(format_se(assay=expr, coldata=clin, assay_type='expr', convert_gene_name=!study %in% study_with_gene_id))
+  return(format_se(assay=expr, coldata=clin, assay_type='expr', convert_gene_name=!study %in% study_with_gene_id, is_isoform=is_isoform))
 }
 
 Create_SNV_SummarizedExperiment = function( case, clin, snv, feat_snv , feat_cna , feat_cin , cna_bool, snv_bool ){
@@ -238,7 +245,7 @@ Create_SNV_SummarizedExperiment = function( case, clin, snv, feat_snv , feat_cna
 }
 
 
-Create_SummarizedExperiments = function( input_dir, study , expr_bool , snv_bool , cna_bool, cin_bool , coverage , indel_bool ){
+Create_SummarizedExperiments = function( input_dir, study , expr_bool , snv_bool , cna_bool, cin_bool , coverage , indel_bool, expr_with_counts_isoforms ){
   # study= data$study
   # expr_bool= data$expr_boo
   # snv_bool= data$snv_boo
@@ -282,10 +289,39 @@ Create_SummarizedExperiments = function( input_dir, study , expr_bool , snv_bool
 	}
 
 	if( expr_bool ){
-	  expr = read.csv( expr_file , sep=";" , stringsAsFactors=FALSE )
-	  colnames(expr) <- str_replace_all(colnames(expr), '[-\\.]', '_')
-	  se_list[["expr"]] <- Create_EXP_SummarizedExperiment(study=study, case=case, clin=clin, expr=expr, 
-									feat_snv=feat_snv , feat_cna=feat_cna, feat_cin=feat_cin , cna_bool=cna_bool , snv_bool=snv_bool )
+	  if(expr_with_counts_isoforms){
+	    expr_files <- c('EXPR_gene_tpm.csv', 'EXPR_gene_counts.csv', 'EXPR_isoform_tpm.csv', 'EXPR_isoform_counts.csv')
+	    for(expr_file in expr_files){
+	      expr = read.csv( file.path(input_dir, expr_file) , sep=";" , stringsAsFactors=FALSE )
+	      colnames(expr) <- str_replace_all(colnames(expr), '[-\\.]', '_')
+	      se_list[[tolower(str_replace(expr_file, '.csv', ''))]] <- Create_EXP_SummarizedExperiment(
+	        study=study, 
+	        case=case, 
+	        clin=clin, 
+	        expr=expr, 
+	        feat_snv=feat_snv, 
+	        feat_cna=feat_cna, 
+	        feat_cin=feat_cin, 
+	        cna_bool=cna_bool, 
+	        snv_bool=snv_bool,
+	        is_isoform=str_detect(expr_file, 'isoform')
+	      )
+	    }
+	  }else{
+	    expr = read.csv( expr_file , sep=";" , stringsAsFactors=FALSE )
+	    colnames(expr) <- str_replace_all(colnames(expr), '[-\\.]', '_')
+	    se_list[["expr"]] <- Create_EXP_SummarizedExperiment(
+	      study=study, 
+	      case=case, 
+	      clin=clin, 
+	      expr=expr, 
+	      feat_snv=feat_snv , 
+	      feat_cna=feat_cna, 
+	      feat_cin=feat_cin , 
+	      cna_bool=cna_bool , 
+	      snv_bool=snv_bool 
+	     )
+	  }
 	}
 
 	if( snv_bool ){
