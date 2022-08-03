@@ -25,7 +25,7 @@ renamed_cols <- list(
   patient = "unique_patient_ID"
 )
 
-format_se <- function(assay, coldata, assay_type, convert_gene_name=TRUE, is_isoform){
+format_se <- function(assay, coldata, assay_type, convert_gene_name=TRUE, is_isoform=FALSE){
   # colnames(assay) <- str_replace_all(colnames(assay), '[-\\.]', '_')
   # rownames(coldata) <- str_replace_all(rownames(coldata), '[-\\.]', '_')
   # coldata$patient <- rownames(coldata)
