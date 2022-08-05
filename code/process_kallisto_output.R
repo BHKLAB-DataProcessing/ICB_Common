@@ -14,10 +14,10 @@ process_kallisto_output <- function(work_dir, kallisto_zip, tx2gene){
   expr_gene <- tximport(files, type = "kallisto", tx2gene = tx2gene)
   
   expr_list <- list()
-  expr_list[['expr_gene_tpm']] <- expr_gene$abundance
-  expr_list[['expr_gene_counts']] <- expr_gene$counts
-  expr_list[['expr_isoform_tpm']] <- expr_tx$abundance
-  expr_list[['expr_isoform_counts']] <- expr_tx$counts
+  expr_list[['expr_gene_tpm']] <- log2(expr_gene$abundance + 0.001)
+  expr_list[['expr_gene_counts']] <- log2(expr_gene$counts + 1)
+  expr_list[['expr_isoform_tpm']] <- log2(expr_tx$abundance + 0.001)
+  expr_list[['expr_isoform_counts']] <- log2(expr_tx$counts + 1)
   
   saveRDS(expr_list, file.path(work_dir, 'expr_list.rds'))
   
