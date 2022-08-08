@@ -2,10 +2,7 @@ library(data.table)
 library(tximport)
 
 # Creates EXPR_gene_tpm.tsv, EXPR_gene_counts.tsv, EXPR_tx_tpm.tsv, EXPR_tx_counts.tsv 
-process_kallisto_output <- function(work_dir, kallisto_zip, tx2gene){
-  dir.create(file.path(work_dir, 'rnaseq'))
-  unzip(file.path(work_dir, kallisto_zip), exdir=file.path(work_dir, 'rnaseq'))
-  
+process_kallisto_output <- function(work_dir, tx2gene){
   samples <- list.dirs(file.path(work_dir, 'rnaseq'), full.names=FALSE, recursive = FALSE)
   files <- file.path(work_dir, 'rnaseq', samples, "abundance.h5")
   names(files) <- samples
