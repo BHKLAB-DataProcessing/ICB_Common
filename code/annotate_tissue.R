@@ -62,7 +62,7 @@ annotate_tissue <- function(clin, study, annotation_tissue, check_histo=FALSE){
 #       unique_tissueid = tissue_ids
 #     )
 #   }
-#   study_annot$unique_tissueid[study_annot$unique_tissueid == '<blank>'] <- ''
+#   study_annot$unique_tissueid[study_annot$unique_tissueid == '<blank>' | study_annot$unique_tissueid == "NA"] <- ''
 #   annotation_tissue <- rbind(annotation_tissue, study_annot)
 # }
 # 
