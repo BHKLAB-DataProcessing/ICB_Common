@@ -1,0 +1,8 @@
+"study","dataset.drug.name","unique_drugid"
+"Braun","NIVOLUMAB","Nivolumab"
+"Hugo","Pembrolizumab","Pembrolizumab"
+"Hugo","Nivolumab","Nivolumab"
+"Miao1","nivolumab","Nivolumab"
+"Miao1","nivolumab + ipilimumab","Nivolumab + Ipilimumab"
+"Miao1","atezolizumab","Atezolizumab"
+"VanDenEnde","neoadjuvant chemoradiotherapy + atezolizumab","neoadjuvant chemoradiotherapy + Atezolizumab"

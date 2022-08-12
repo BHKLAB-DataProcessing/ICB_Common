@@ -6,9 +6,10 @@ library(biomaRt)
 library(stringr)
 
 clin_cols <- c(
-  "patient" , "sex" , "age" , "primary" , "histo" , "stage" , 
+  "patient" , "sex" , "age" , "primary" , "histo" , "unique_tissueid", "unique_drugid", "stage" , 
   "response.other.info" , "recist" , "response" , "drug_type" , 
-  "dna" , "rna" , "t.pfs" , "pfs" , "t.os" , "os"
+  "dna" , "rna" , "t.pfs" , "pfs" , "t.os" , "os", 
+  "survival_unit", "survival_type"
 )
 
 added_cols <- c(
@@ -37,8 +38,8 @@ format_se <- function(assay, coldata, assay_type, convert_gene_name=TRUE, is_iso
     colnames(coldata)[colnames(coldata) == renamed_col] <- renamed_cols[[renamed_col]]
   }
   
-  coldata$survival_unit <- "month"
-  coldata$survival_type <- "PFS"
+  # coldata$survival_unit <- "month"
+  # coldata$survival_type <- "PFS"
   
   if(assay_type == "snv"){
     # Subset features_gene by gene_name and remove duplicates, if any.
@@ -280,7 +281,7 @@ Create_SummarizedExperiments = function( input_dir, study , expr_bool , snv_bool
   case$patient <- str_replace_all(case$patient, '[-\\.]', '_')
   clin <- read.csv( clin_file , sep=";" , stringsAsFactors=FALSE )
   clin$patient <- str_replace_all(clin$patient, '[-\\.]', '_')
-
+  
 	if( cna_bool ){
 	  cna = read.csv( cna_file , sep=";" , stringsAsFactors=FALSE )
 	  colnames(cna) <- str_replace_all(colnames(cna), '[-\\.]', '_')
