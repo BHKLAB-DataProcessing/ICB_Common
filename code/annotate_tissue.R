@@ -38,7 +38,7 @@ annotate_tissue <- function(clin, study, annotation_tissue, check_histo=FALSE){
     }))
   }
 
-  clin$unique_tissueid <- tissue_ids
+  clin$tissueid <- tissue_ids
   
   clin <- clin[, c(clin_cols, colnames(clin)[!colnames(clin) %in% clin_cols])]
   clin[, c('t.pfs', 't.os')] <- sapply(clin[, c('t.pfs', 't.os')], as.numeric)
