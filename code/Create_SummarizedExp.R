@@ -281,8 +281,8 @@ Create_SummarizedExperiments = function( input_dir, study , expr_bool , snv_bool
   case$patient <- str_replace_all(case$patient, '[-\\.]', '_')
   clin <- read.csv( clin_file , sep=";" , stringsAsFactors=FALSE )
   clin$patient <- str_replace_all(clin$patient, '[-\\.]', '_')
-  clin$unique_tissueid[is.na(clin$unique_tissueid)] <- ""
-  clin$unique_drugid[is.na(clin$unique_drugid)] <- ""
+  clin$tissueid[is.na(clin$tissueid)] <- ""
+  clin$treatmentid[is.na(clin$treatmentid)] <- ""
   
 	if( cna_bool ){
 	  cna = read.csv( cna_file , sep=";" , stringsAsFactors=FALSE )
