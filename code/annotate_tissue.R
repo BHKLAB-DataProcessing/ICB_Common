@@ -2,7 +2,7 @@ library(data.table)
 library(stringr)
 
 clin_cols <- c(
-  "patient" , "sex" , "age" , "primary" , "histo" , "unique_tissueid", "stage" , 
+  "patient" , "sex" , "age" , "primary" , "histo" , "tissueid", "stage" , 
   "response.other.info" , "recist" , "response" , "drug_type" , 
   "dna" , "rna" , "t.pfs" , "pfs" , "t.os" , "os", 
   "survival_unit", "survival_type"
