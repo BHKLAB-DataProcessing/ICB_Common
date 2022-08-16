@@ -1,4 +1,4 @@
-"study","dataset.drug.name","unique_drugid"
+"study","dataset.drug.name","treatmentid"
 "Braun","NIVOLUMAB","Nivolumab"
 "Hugo","Pembrolizumab","Pembrolizumab"
 "Hugo","Nivolumab","Nivolumab"

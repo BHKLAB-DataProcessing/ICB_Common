@@ -6,7 +6,7 @@ library(biomaRt)
 library(stringr)
 
 clin_cols <- c(
-  "patient" , "sex" , "age" , "primary" , "histo" , "unique_tissueid", "unique_drugid", "stage" , 
+  "patient" , "sex" , "age" , "primary" , "histo" , "tissueid", "treatmentid", "stage" , 
   "response.other.info" , "recist" , "response" , "drug_type" , 
   "dna" , "rna" , "t.pfs" , "pfs" , "t.os" , "os", 
   "survival_unit", "survival_type"
@@ -23,7 +23,7 @@ renamed_cols <- list(
   primary = "cancer_type",
   t.pfs = "survival_time",
   pfs = "event_occured",
-  patient = "unique_patient_ID"
+  patient = "patientid"
 )
 
 format_se <- function(assay, coldata, assay_type, convert_gene_name=TRUE, is_isoform=FALSE){

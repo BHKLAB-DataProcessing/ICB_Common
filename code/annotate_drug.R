@@ -5,7 +5,7 @@ annotate_drug <- function(study, drug_names, annotation_drug){
   annotation_drug <- annotation_drug[annotation_drug$study == study, ]
   drug_ids <- unlist(lapply(drug_names, function(drug){
     if(!is.na(drug)){
-      drugid <- annotation_drug[annotation_drug$dataset.drug.name == drug, c('unique_drugid')]
+      drugid <- annotation_drug[annotation_drug$dataset.drug.name == drug, c('treatmentid')]
       if(!is.na(drugid)){
         return(drugid)
       }else{

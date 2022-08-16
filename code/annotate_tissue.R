@@ -20,20 +20,20 @@ annotate_tissue <- function(clin, study, annotation_tissue, check_histo=FALSE){
     tissue_ids <- unlist(lapply(clin$patient, function(patient){
       patient_cancer_type <- clin[clin$patient == patient, c('primary', 'histo')]
       cancer <- patient_cancer_type$histo
-      if(!is.na(cancer) & length(study_annotation[study_annotation$cancer_type == cancer, c('unique_tissueid')]) > 0){
+      if(!is.na(cancer) & length(study_annotation[study_annotation$cancer_type == cancer, c('tissueid')]) > 0){
         return(
-          study_annotation[study_annotation$cancer_type == cancer, c('unique_tissueid')]
+          study_annotation[study_annotation$cancer_type == cancer, c('tissueid')]
         )
       }else{
         return(
-          study_annotation[study_annotation$cancer_type == patient_cancer_type$primary, c('unique_tissueid')]
+          study_annotation[study_annotation$cancer_type == patient_cancer_type$primary, c('tissueid')]
         )
       }
     }))
   }else{
     tissue_ids <- unlist(lapply(clin$primary, function(cancer){
       return(
-        study_annotation[study_annotation$cancer_type == cancer, c('unique_tissueid')]
+        study_annotation[study_annotation$cancer_type == cancer, c('tissueid')]
       )
     }))
   }
