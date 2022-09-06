@@ -11,7 +11,15 @@ clin_cols <- c(
 annotate_tissue <- function(clin, study, annotation_tissue, check_histo=FALSE){
   
   clin$survival_unit <- "month"
-  clin$survival_type <- "PFS"
+  if(!all(is.na(clin$os)) && !all(is.na(clin$pfs))){
+    clin$survival_type <- 'PFS/OS'
+  }else if(all(is.na(clin$pfs))){
+    clin$survival_type <- "OS"
+  }else if(all(is.na(clin$os))){
+    clin$survival_type <- "PFS"
+  }else{
+    clin$survival_type <- "PFS"
+  }
   
   study_annotation <- annotation_tissue[annotation_tissue$study == study, ]
   

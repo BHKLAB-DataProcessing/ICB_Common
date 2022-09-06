@@ -21,8 +21,10 @@ added_cols <- c(
 renamed_cols <- list(
   drug_type = "treatment",
   primary = "cancer_type",
-  t.pfs = "survival_time",
-  pfs = "event_occured",
+  t.pfs = "survival_time_pfs",
+  pfs = "event_occurred_pfs",
+  t.os = "survival_time_os",
+  os = "event_occurred_os",
   patient = "patientid"
 )
 
