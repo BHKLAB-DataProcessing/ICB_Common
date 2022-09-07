@@ -3,8 +3,8 @@ library(SummarizedExperiment)
 library(MultiAssayExperiment)
 library(stringr)
 
-# source_location <- "https://raw.githubusercontent.com/BHKLAB-Pachyderm/ICB_Common/main"
-source_location <- "~/Documents/GitHub/Pachyderm/PredictIO_ICB/ICB_Common"
+source_location <- "https://raw.githubusercontent.com/BHKLAB-Pachyderm/ICB_Common/main"
+# source_location <- "~/Documents/GitHub/Pachyderm/PredictIO_ICB/ICB_Common"
 
 get_MultiAssayExp <- function(study, input_dir, expr_with_counts_isoforms=FALSE){ 
   source(paste(source_location, "code", "CNA_Functions.R", sep = "/"))
