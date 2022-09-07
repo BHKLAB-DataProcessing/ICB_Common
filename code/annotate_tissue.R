@@ -13,7 +13,7 @@ annotate_tissue <- function(clin, study, annotation_tissue, check_histo=FALSE){
   clin$survival_unit <- "month"
   if(!all(is.na(clin$os)) && !all(is.na(clin$pfs))){
     clin$survival_type <- 'PFS/OS'
-  }else if(all(is.na(clin$pfs)) && !all(is.na(clin$pfs))){
+  }else if(all(is.na(clin$pfs)) && !all(is.na(clin$os))){
     clin$survival_type <- "OS"
   }else if(!all(is.na(clin$pfs)) && all(is.na(clin$os))){
     clin$survival_type <- "PFS"
