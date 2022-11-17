@@ -107,6 +107,8 @@ format_se <- function(assay, coldata, assay_type, convert_gene_name=TRUE, is_iso
       gene_ids <- rownames(assay)
     }
     
+    assay <- assay[order(rownames(assay)), ]
+    
     # build the GRanges object ussed as rowRanges (rowData)
     assay_genes <- as.data.table(features_df[rownames(features_df) %in% gene_ids, ])
     assay_genes <- assay_genes[order(rownames(assay_genes)), ]
@@ -115,13 +117,14 @@ format_se <- function(assay, coldata, assay_type, convert_gene_name=TRUE, is_iso
       is.na(start),
       c("start", "end", "length", "strand") := list(-1, -1, 0, "*")
     ]
+    assay_genes <- assay_genes[order(assay_genes$gene_id), ]
     row_ranges <- makeGRangesFromDataFrame(
       assay_genes,
       keep.extra.columns=TRUE  # retain metadata
     )
+
     names(row_ranges) <- row_ranges$rownames
     
-    assay <- assay[order(rownames(assay)), ]
     assay_list <- list()
     assay_list[[assay_type]] <- assay
     return(SummarizedExperiment(assays=assay_list, colData=coldata, rowRanges=row_ranges))
@@ -250,9 +253,9 @@ Create_SNV_SummarizedExperiment = function( case, clin, snv, feat_snv , feat_cna
 
 Create_SummarizedExperiments = function( input_dir, study , expr_bool , snv_bool , cna_bool, cin_bool , coverage , indel_bool, expr_with_counts_isoforms ){
   # study= data$study
-  # expr_bool= data$expr_boo
-  # snv_bool= data$snv_boo
-  # cna_bool= data$cna_boo
+  # expr_bool= data$expr_bool
+  # snv_bool= data$snv_bool
+  # cna_bool= data$cna_bool
   # cin_bool= data$cin_bool
   # coverage= data$coverage
   # indel_bool= data$indel_bool
