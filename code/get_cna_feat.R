@@ -5,6 +5,7 @@ work_dir <- args[1]
 cin_bool <- args[2]
 coverage <- args[3]
 
+covergage <- as.numeric(covergage)
 cna <- read.csv( file.path(work_dir, 'CNA_gene.csv') , sep=";" , stringsAsFactors=FALSE )
 cases <- read.csv( file.path(work_dir, 'cased_sequenced.csv') , sep=";" , stringsAsFactors=FALSE )
 

@@ -181,6 +181,7 @@ work_dir <- args[1]
 coverage <- args[2]
 indel_bool <- args[3]
 
+coverage <- as.numeric(coverage)
 file <- file.path(work_dir, 'SNV.csv')
 case <- file.path(work_dir, 'cased_sequenced.csv')
 
