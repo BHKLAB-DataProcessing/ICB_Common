@@ -10,7 +10,7 @@ study <- args[3]
 assays <- args[4]
 
 se_list <- list()
-for(assay in assays){
+for(assay in unlist(str_split(assays, ':'))){
   se_list[[tolower(assay)]] <- readRDS(file.path(work_dir, paste0(assay, '.rds')))
 }
 

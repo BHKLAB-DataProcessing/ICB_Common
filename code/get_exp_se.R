@@ -7,6 +7,7 @@ study <- args[2]
 snv_bool <- args[3]
 cna_bool <- args[4]
 expr_with_counts_isoforms <- args[5]
+annotation_file <- args[6]
 
 Create_EXP_SummarizedExperiment = function( study, assay_name, case , clin, expr, feat_snv, feat_cna, feat_cin, is_isoform=FALSE ){
   
@@ -37,7 +38,14 @@ Create_EXP_SummarizedExperiment = function( study, assay_name, case , clin, expr
   clin = clin[ patient , ]
   expr = expr[ , patient ]
   
-  expr_se <- format_se(assay=expr, coldata=clin, assay_type='expr', convert_gene_name=!study %in% study_with_gene_id, is_isoform=is_isoform)
+  expr_se <- format_se(
+    assay=expr, 
+    coldata=clin, 
+    assay_type='expr', 
+    convert_gene_name=!study %in% study_with_gene_id, 
+    is_isoform=is_isoform, 
+    gene_annotation_file=annotation_file
+  )
   saveRDS(expr_se, file.path(work_dir, paste0(assay_name, '.rds')))
 }
 

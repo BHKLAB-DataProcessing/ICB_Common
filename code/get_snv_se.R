@@ -7,6 +7,7 @@ source(paste(source_location, "code", "format_se.R", sep = "/"))
 args <- commandArgs(trailingOnly = TRUE)
 work_dir <- args[1]
 cna_bool <- args[2]
+annotation_file <- args[3]
 
 case = read.csv( file.path(work_dir, 'cased_sequenced.csv') , sep=";" , stringsAsFactors=FALSE )
 snv = read.csv( file.path(work_dir, 'SNV.csv') , sep=";" , stringsAsFactors=FALSE )
@@ -56,6 +57,8 @@ clin <- data.frame(cbind(
 clin[ rownames(feat_snv) , colnames(feat_snv) ] = feat_snv
 
 if(cna_bool){ 
+  feat_cin <- readRDS(file.path(work_dir, 'feat_cin.rds'))
+  feat_cna <- readRDS(file.path(work_dir, 'feat_cna.rds'))
   rownames(feat_cin) = feat_cin$patient
   clin[ rownames(feat_cin) , "CIN" ] = feat_cin[ , "CIN" ]
   rownames(feat_cna) = feat_cna$patient
@@ -64,6 +67,11 @@ if(cna_bool){
 
 clin = clin[ patient , ]
 
-snv_se <- format_se(assay=mat_snv, coldata=clin, assay_type='snv')
+snv_se <- format_se(
+  assay=mat_snv, 
+  coldata=clin, 
+  assay_type='snv', 
+  gene_annotation_file=annotation_file
+)
 
 saveRDS(snv_se, file.path(work_dir, 'SNV.rds'))

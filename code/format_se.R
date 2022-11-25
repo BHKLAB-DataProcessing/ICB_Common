@@ -26,7 +26,8 @@ renamed_cols <- list(
   patient = "patientid"
 )
 
-format_se <- function(assay, coldata, assay_type, convert_gene_name=TRUE, is_isoform=FALSE){
+format_se <- function(assay, coldata, assay_type, convert_gene_name=TRUE, is_isoform=FALSE, gene_annotation_file){
+  load(gene_annotation_file)
   # colnames(assay) <- str_replace_all(colnames(assay), '[-\\.]', '_')
   # rownames(coldata) <- str_replace_all(rownames(coldata), '[-\\.]', '_')
   # coldata$patient <- rownames(coldata)
