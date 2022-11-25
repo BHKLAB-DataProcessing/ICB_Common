@@ -1,4 +1,5 @@
 library(data.table)
+library(stringr)
 
 Get_TMB_raw = function( file , case ){
   snv = read.csv( file , sep=";" , stringsAsFactors=FALSE )
