@@ -11,8 +11,8 @@ snv_bool <- args[2]
 annotation_file <- args[3]
 
 cna <- read.csv( file.path(work_dir, 'CNA_gene.csv') , sep=";" , stringsAsFactors=FALSE )
-clin <- read.csv( file.path(work_dir, 'CLIN.csv') , sep=";" , stringsAsFactors=FALSE )
-cases <- read.csv( file.path(work_dir, 'cased_sequenced.csv') , sep=";" , stringsAsFactors=FALSE )
+clin <- readRDS( file.path(work_dir, 'CLIN.rds'))
+cases <- readRDS( file.path(work_dir, 'cased_sequenced.rds'))
 
 feat_cin <- readRDS(file.path(work_dir, 'feat_cin.rds')) 
 feat_cna <- readRDS(file.path(work_dir, 'feat_cna.rds'))  

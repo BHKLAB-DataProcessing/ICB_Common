@@ -7,7 +7,7 @@ coverage <- args[3]
 
 covergage <- as.numeric(covergage)
 cna <- read.csv( file.path(work_dir, 'CNA_gene.csv') , sep=";" , stringsAsFactors=FALSE )
-cases <- read.csv( file.path(work_dir, 'cased_sequenced.csv') , sep=";" , stringsAsFactors=FALSE )
+cases <- readRDS( file.path(work_dir, 'cased_sequenced.rds') )
 
 # CIN
 patient = cases[ cases$cna %in% 1, ]$patient

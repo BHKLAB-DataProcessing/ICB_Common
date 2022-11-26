@@ -49,8 +49,8 @@ Create_EXP_SummarizedExperiment = function( study, assay_name, case , clin, expr
   saveRDS(expr_se, file.path(work_dir, paste0(assay_name, '.rds')))
 }
 
-case <- read.csv( file.path(work_dir, 'cased_sequenced.csv') , sep=";" , stringsAsFactors=FALSE )
-clin <- read.csv( file.path(work_dir, 'CLIN.csv') , sep=";" , stringsAsFactors=FALSE )
+case <- readRDS(file.path(work_dir, 'cased_sequenced.rds'))
+clin <- readRDS( file.path(work_dir, 'CLIN.rds'))
 feat_snv <- NA
 feat_cna <- NA
 feat_cin <- NA

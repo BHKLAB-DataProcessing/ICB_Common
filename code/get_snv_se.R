@@ -9,9 +9,9 @@ work_dir <- args[1]
 cna_bool <- args[2]
 annotation_file <- args[3]
 
-case = read.csv( file.path(work_dir, 'cased_sequenced.csv') , sep=";" , stringsAsFactors=FALSE )
+case = readRDS( file.path(work_dir, 'cased_sequenced.rds'))
 snv = read.csv( file.path(work_dir, 'SNV.csv') , sep=";" , stringsAsFactors=FALSE )
-clin = read.csv( file.path(work_dir, 'CLIN.csv') , sep=";" , stringsAsFactors=FALSE )
+clin = readRDS( file.path(work_dir, 'CLIN.rds'))
 feat_nsv <- readRDS(file.path(work_dir, 'feat_snv.rds'))
 
 snv$Sample <- str_replace_all(snv$Sample, '[-\\.]', '_')

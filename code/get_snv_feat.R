@@ -1,9 +1,8 @@
 library(data.table)
 library(stringr)
 
-Get_TMB_raw = function( file , case ){
+Get_TMB_raw = function( file , cases ){
   snv = read.csv( file , sep=";" , stringsAsFactors=FALSE )
-  cases = read.csv( case , sep=";" , stringsAsFactors=FALSE )
   patient = cases[ cases$snv %in% 1, ]$patient
   
   tmb = rep( 0 , length(patient))
@@ -17,9 +16,8 @@ Get_TMB_raw = function( file , case ){
   tmb
 }
 
-Get_nsTMB_raw = function( file , case ){
+Get_nsTMB_raw = function( file , cases ){
   snv = read.csv(  file , sep=";" , stringsAsFactors=FALSE )
-  cases = read.csv( case , sep=";" , stringsAsFactors=FALSE )
   patient = cases[ cases$snv %in% 1, ]$patient
   
   tmb = rep( 0 , length(patient))
@@ -37,9 +35,8 @@ Get_nsTMB_raw = function( file , case ){
   tmb
 }
 
-Get_indel_TMB_raw = function( file , case , indel_bool ){
+Get_indel_TMB_raw = function( file , cases , indel_bool ){
   snv = read.csv( file , sep=";" , stringsAsFactors=FALSE )
-  cases = read.csv( case , sep=";" , stringsAsFactors=FALSE )
   patient = cases[ cases$snv %in% 1, ]$patient
   snv_patient = sort(unique(snv$Sample))
   if(indel_bool){
@@ -62,9 +59,8 @@ Get_indel_TMB_raw = function( file , case , indel_bool ){
   tmb
 }
 
-Get_indel_nsTMB_raw = function( file , case  , indel_bool ){
+Get_indel_nsTMB_raw = function( file , cases  , indel_bool ){
   snv = read.csv( file , sep=";" , stringsAsFactors=FALSE )
-  cases = read.csv( case , sep=";" , stringsAsFactors=FALSE )
   patient = cases[ cases$snv %in% 1, ]$patient
   snv_patient = sort(unique(snv$Sample))
   if(indel_bool){
@@ -90,9 +86,8 @@ Get_indel_nsTMB_raw = function( file , case  , indel_bool ){
   tmb
 }
 
-Get_TMB_perMb = function( file , case , coverage ){
+Get_TMB_perMb = function( file , cases , coverage ){
   snv = read.csv( file , sep=";" , stringsAsFactors=FALSE )
-  cases = read.csv( case , sep=";" , stringsAsFactors=FALSE )
   patient = cases[ cases$snv %in% 1, ]$patient
   
   tmb = rep( 0 , length(patient))
@@ -106,9 +101,8 @@ Get_TMB_perMb = function( file , case , coverage ){
   tmb	
 }
 
-Get_nsTMB_perMb = function( file , case , coverage ){
+Get_nsTMB_perMb = function( file , cases , coverage ){
   snv = read.csv( file , sep=";" , stringsAsFactors=FALSE )
-  cases = read.csv( case , sep=";" , stringsAsFactors=FALSE )
   patient = cases[ cases$snv %in% 1, ]$patient
   
   tmb = rep( 0 , length(patient))
@@ -126,9 +120,8 @@ Get_nsTMB_perMb = function( file , case , coverage ){
   tmb
 }
 
-Get_indel_TMB_perMb = function( file , case , coverage , indel_bool ){
+Get_indel_TMB_perMb = function( file , cases , coverage , indel_bool ){
   snv = read.csv( file , sep=";" , stringsAsFactors=FALSE )
-  cases = read.csv( case , sep=";" , stringsAsFactors=FALSE )
   patient = cases[ cases$snv %in% 1, ]$patient
   snv_patient = sort(unique(snv$Sample))
   if(indel_bool){
@@ -150,9 +143,8 @@ Get_indel_TMB_perMb = function( file , case , coverage , indel_bool ){
   tmb
 }
 
-Get_indel_nsTMB_perMb = function( file , case , coverage , indel_bool ){
+Get_indel_nsTMB_perMb = function( file , cases , coverage , indel_bool ){
   snv = read.csv( file , sep=";" , stringsAsFactors=FALSE )
-  cases = read.csv( case , sep=";" , stringsAsFactors=FALSE )
   patient = cases[ cases$snv %in% 1, ]$patient
   snv_patient = sort(unique(snv$Sample))
   if(indel_bool){
@@ -184,17 +176,17 @@ indel_bool <- args[3]
 
 coverage <- as.numeric(coverage)
 file <- file.path(work_dir, 'SNV.csv')
-case <- file.path(work_dir, 'cased_sequenced.csv')
+cases <- readRDS(file.path(work_dir, 'cased_sequenced.rds'))
 
 feat_snv = cbind( 
-  Get_TMB_raw( file=file , case=case ) ,
-  Get_nsTMB_raw( file=file , case=case ) ,
-  Get_indel_TMB_raw( file=file , case=case , indel_bool=indel_bool ) ,
-  Get_indel_nsTMB_raw( file=file , case=case , indel_bool=indel_bool ) ,
-  Get_TMB_perMb( file=file , case=case , coverage=coverage ) ,
-  Get_nsTMB_perMb( file=file , case=case , coverage=coverage) ,
-  Get_indel_TMB_perMb( file=file , case=case , coverage=coverage , indel_bool=indel_bool ) ,
-  Get_indel_nsTMB_perMb( file=file , case=case , coverage=coverage , indel_bool=indel_bool )
+  Get_TMB_raw( file=file , cases=cases ) ,
+  Get_nsTMB_raw( file=file , cases=cases ) ,
+  Get_indel_TMB_raw( file=file , cases=cases , indel_bool=indel_bool ) ,
+  Get_indel_nsTMB_raw( file=file , cases=cases , indel_bool=indel_bool ) ,
+  Get_TMB_perMb( file=file , cases=cases , coverage=coverage ) ,
+  Get_nsTMB_perMb( file=file , cases=cases , coverage=coverage) ,
+  Get_indel_TMB_perMb( file=file , cases=cases , coverage=coverage , indel_bool=indel_bool ) ,
+  Get_indel_nsTMB_perMb( file=file , cases=cases , coverage=coverage , indel_bool=indel_bool )
 )
 colnames(feat_snv) = c( "TMB_raw" , "nsTMB_raw" , "indel_TMB_raw" , "indel_nsTMB_raw" , 
                  "TMB_perMb" , "nsTMB_perMb" , "indel_TMB_perMb" , "indel_nsTMB_perMb" )
