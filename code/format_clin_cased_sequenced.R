@@ -1,4 +1,5 @@
 library(data.table)
+library(stringr)
 
 args <- commandArgs(trailingOnly = TRUE)
 work_dir <- args[1]
