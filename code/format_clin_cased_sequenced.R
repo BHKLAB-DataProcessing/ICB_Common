@@ -12,4 +12,4 @@ clin$tissueid[is.na(clin$tissueid)] <- ""
 clin$treatmentid[is.na(clin$treatmentid)] <- ""
 
 saveRDS(case, file.path(work_dir, 'cased_sequences.rds'))
-saveRDS(case, file.path(work_dir, 'CLIN.rds'))
+saveRDS(clin, file.path(work_dir, 'CLIN.rds'))
