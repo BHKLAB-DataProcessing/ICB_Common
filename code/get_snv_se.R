@@ -12,7 +12,7 @@ annotation_file <- args[3]
 case = readRDS( file.path(work_dir, 'cased_sequenced.rds'))
 snv = read.csv( file.path(work_dir, 'SNV.csv') , sep=";" , stringsAsFactors=FALSE )
 clin = readRDS( file.path(work_dir, 'CLIN.rds'))
-feat_nsv <- readRDS(file.path(work_dir, 'feat_snv.rds'))
+feat_snv <- readRDS(file.path(work_dir, 'feat_snv.rds'))
 
 snv$Sample <- str_replace_all(snv$Sample, '[-\\.]', '_')
 
