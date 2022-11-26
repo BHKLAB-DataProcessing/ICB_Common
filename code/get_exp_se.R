@@ -9,6 +9,9 @@ cna_bool <- args[4]
 expr_with_counts_isoforms <- args[5]
 annotation_file <- args[6]
 
+source_location <- "https://raw.githubusercontent.com/BHKLAB-DataProcessing/ICB_Common/main"
+source(paste(source_location, "code", "format_se.R", sep = "/"))
+
 Create_EXP_SummarizedExperiment = function( study, assay_name, case , clin, expr, feat_snv, feat_cna, feat_cin, is_isoform=FALSE ){
   
   study_with_gene_id <- c("Braun", "Gide", "Hugo", "INSPIRE", "Jung", "Kim", "Miao.1", "Nathanson", "Riaz", "Snyder", "Van_Allen", "VanDenEnde")
