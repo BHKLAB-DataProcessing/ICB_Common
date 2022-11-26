@@ -39,4 +39,4 @@ for(col in cols){
 coldata <- coldata[order(rownames(coldata)), ]
 
 multiassay <- MultiAssayExperiment(experiments=se_list, colData=coldata)
-saveRDS(multiassay, paste0(output_dir, study, 'rds'))
+saveRDS(multiassay, paste0(output_dir, study, '.rds'))
