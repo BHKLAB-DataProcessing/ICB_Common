@@ -70,7 +70,7 @@ if(cna_bool){
 if(expr_with_counts_isoforms){
   expr_files <- c('EXPR_gene_tpm.csv', 'EXPR_gene_counts.csv', 'EXPR_isoform_tpm.csv', 'EXPR_isoform_counts.csv')
   for(expr_file in expr_files){
-    expr = read.csv( file.path(input_dir, expr_file) , sep=";" , stringsAsFactors=FALSE )
+    expr = read.csv( file.path(work_dir, expr_file) , sep=";" , stringsAsFactors=FALSE )
     colnames(expr) <- str_replace_all(colnames(expr), '[-\\.]', '_')
     
     Create_EXP_SummarizedExperiment(
