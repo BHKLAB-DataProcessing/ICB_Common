@@ -14,7 +14,10 @@ source(paste(source_location, "code", "format_se.R", sep = "/"))
 
 Create_EXP_SummarizedExperiment = function( study, assay_name, case , clin, expr, feat_snv, feat_cna, feat_cin, is_isoform=FALSE ){
   
-  study_with_gene_id <- c("Braun", "Gide", "Hugo", "INSPIRE", "Jung", "Kim", "Miao.1", "Nathanson", "Riaz", "Snyder", "Van_Allen", "VanDenEnde")
+  study_with_gene_id <- c(
+    "Braun", "Gide", "Hugo", "INSPIRE", "Jung", "Kim", "Fumet1", "Fumet2", "Miao.1", "Nathanson", 
+    "Riaz", "Snyder", "Van_Allen", "VanDenEnde"
+  )
   
   rownames(clin) = clin$patient
   added_df <- as.data.frame(matrix(NA, nrow = nrow(clin), ncol = length(added_cols)))
