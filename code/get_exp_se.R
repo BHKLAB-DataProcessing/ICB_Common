@@ -15,7 +15,7 @@ source(paste(source_location, "code", "format_se.R", sep = "/"))
 Create_EXP_SummarizedExperiment = function( study, assay_name, case , clin, expr, feat_snv, feat_cna, feat_cin, is_isoform=FALSE ){
   
   study_with_gene_id <- c(
-    "Braun", "Gide", "Hugo", "INSPIRE", "Jung", "Kim", "Fumet1", "Fumet2", "Miao.1", "Nathanson", 
+    "Braun", "Gide", "Hugo", "INSPIRE", "Jung", "Kim", "Limagne1", "Limagne2", "Miao.1", "Nathanson", 
     "Riaz", "Snyder", "Van_Allen", "VanDenEnde"
   )
   
