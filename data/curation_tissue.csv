@@ -78,3 +78,15 @@ Prat,HNC,Head and Neck
 Prat,Lung,Lung
 Prat,Melanoma,Skin
 Ascierto,Kidney,Kidney
+OCTANE,LUNG,Lung
+OCTANE,EYE,Eye
+OCTANE,BLADDER,Bladder/Urinary Tract
+OCTANE,KIDNEY,Kidney
+OCTANE,HEAD_NECK,Head and Neck
+OCTANE,Ovary,Ovary/Fallopian Tube
+OCTANE,SKIN,Skin
+OCTANE,BOWEL,Bowel
+OCTANE,STOMACH,Esophagus/Stomach
+OCTANE,CERVIX,Cervix
+OCTANE,PROSTATE,Prostate
+OCTANE,ADRENAL_GLAND,
