@@ -93,3 +93,14 @@ OCTANE,ADRENAL_GLAND,
 Wolf2,Breast,Breast
 Fehrenbacher,Lung,Lung
 Rittmeyer,Lung,Lung
+Hartwig,Bone/Soft tissue,Soft tissue/Bone
+Hartwig,Colorectum,
+Hartwig,Head and neck,Head and Neck
+Hartwig,Kidney,Kidney
+Hartwig,Lung,Lung
+Hartwig,Mesothelium,
+Hartwig,Vulva,
+Hartwig,Prostate,Prostate
+Hartwig,Melanoma,Skin
+Hartwig,Small intestine,
+Hartwig,Urothelial tract,Bladder/Urinary Tract

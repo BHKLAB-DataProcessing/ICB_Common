@@ -47,3 +47,12 @@ Gide,Ipilimumab + Pembrolizumab,Ipilimumab + Pembrolizumab
 Gide,Ipilimumab + Nivolumab,Ipilimumab + Nivolumab
 Gide,Pembrolizumab,Pembrolizumab
 Gide,Nivolumab,Nivolumab
+Hartwig,Atezolizumab,Atezolizumab
+Hartwig,Durvalumab,Durvalumab
+Hartwig,Ipilimumab,Ipilimumab
+Hartwig,Ipilimumab/Nivolumab,Ipilimumab + Nivolumab
+Hartwig,Nivolumab,Nivolumab
+Hartwig,Nivolumab/Nivolumab,Nivolumab + Nivolumab
+Hartwig,Pembrolizumab,Pembrolizumab
+Hartwig,Pembrolizumab/Pembrolizumab,Pembrolizumab + Pembrolizumab
+Hartwig,Tremelimumab,Tremelimumab
