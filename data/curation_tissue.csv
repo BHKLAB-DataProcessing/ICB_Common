@@ -94,12 +94,12 @@ Wolf2,Breast,Breast
 Fehrenbacher,Lung,Lung
 Rittmeyer,Lung,Lung
 Hartwig,Bone/Soft tissue,Soft tissue/Bone
-Hartwig,Colorectum,
+Hartwig,Colorectum,Colon
 Hartwig,Head and neck,Head and Neck
 Hartwig,Kidney,Kidney
 Hartwig,Lung,Lung
-Hartwig,Mesothelium,
-Hartwig,Vulva,
+Hartwig,Mesothelium,Mesothelium
+Hartwig,Vulva,Vulva
 Hartwig,Prostate,Prostate
 Hartwig,Melanoma,Skin
 Hartwig,Small intestine,
