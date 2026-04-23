@@ -106,4 +106,8 @@ Hartwig,Small intestine,Small Intestine
 Hartwig,Bladder,Bladder/Urinary Tract
 Foy_HNC,HNSCC,Head and Neck
 Foy_Lung,Lung,Lung
+Rose,Bladder,Bladder/Urinary Tract
+Rose,Urothelial,Urothelial
+Hsu,Liver,Liver
+Kwek,Prostate,Prostate
 Choueiri,Kidney,Kidney
