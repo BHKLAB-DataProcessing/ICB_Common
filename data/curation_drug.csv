@@ -64,3 +64,6 @@ Huang,PD1,PD-1/PD-L1
 Weber,CTLA4 + PD1,IO+combo
 Wolchok,CTLA4,CTLA4
 Chen,CTLA4,CTLA4
+Goswami,CTLA4 + PD1,IO+combo
+Goswami,PD1,PD-1/PD-L1
+Goswami,PD1+VGEF,IO+targeted
